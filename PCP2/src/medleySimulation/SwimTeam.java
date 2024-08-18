@@ -32,11 +32,10 @@ public class SwimTeam extends Thread {
 		try {	
 			for(int s=0;s<sizeOfTeam; s++) { //start swimmer threads
 				swimmers[s].start();
-				swimmers[s].join();
 				
 			}
 			
-			//for(int s=0;s<sizeOfTeam; s++) 			//don't really need to do this;
+			for(int s=0;s<sizeOfTeam; s++) swimmers[s].join();	//don't really need to do this;
 			
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block

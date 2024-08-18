@@ -2,10 +2,10 @@
 // MedleySimulation main class, starts all threads
 package medleySimulation;
 
-import javax.swing.*;
-
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.concurrent.atomic.AtomicBoolean;
+import javax.swing.*;
 
 public class MedleySimulation {
 	static final int numTeams=10;
@@ -25,7 +25,7 @@ public class MedleySimulation {
 	
 	static FinishCounter finishLine; //records who won
 	static CounterDisplay counterDisplay ; //threaded display of counter
-	private static boolean started = false;
+	private static final AtomicBoolean begin = new AtomicBoolean(false);
 
 	//Method to setup all the elements of the GUI
 	public static void setupGUI(int frameX,int frameY) {
@@ -60,8 +60,12 @@ public class MedleySimulation {
 		
 		startB.addActionListener(new ActionListener() {
 		    public void actionPerformed(ActionEvent e)  {
-			    	  //does nothing - fix this 
-					  started = true;	  
+			    	  //does nothing - fix this   
+					  synchronized(begin) {
+						begin.set(true);// set flag to start
+						begin.notifyAll(); //tell everyone waiting it is open
+						}
+						
 		    }
 		   });
 	
@@ -110,7 +114,14 @@ public class MedleySimulation {
       	results.start();
       	
 		
-		while (!started){};
+		  synchronized(begin) {
+			while(!begin.get()) {
+				try {
+				begin.wait();
+				} catch (InterruptedException e) {} 
+			}
+		}
+			
       	//start teams, which start swimmers.
       	for (int i=0;i<numTeams;i++) {
 			teams[i].start();
