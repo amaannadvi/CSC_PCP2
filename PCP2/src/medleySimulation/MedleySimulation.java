@@ -114,7 +114,7 @@ public class MedleySimulation {
       	results.start();
       	
 		
-		  synchronized(begin) {
+		synchronized(begin) {
 			while(!begin.get()) {
 				try {
 				begin.wait();

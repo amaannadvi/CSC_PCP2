@@ -4,8 +4,9 @@
 package medleySimulation;
 
 import java.awt.Color;
-
 import java.util.Random;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 
 
@@ -23,6 +24,8 @@ public class Swimmer extends Thread {
 	private int ID; //thread ID 
 	private int team; // team ID
 	private GridBlock start;
+	private static final AtomicBoolean exiting = new AtomicBoolean();
+	private static AtomicInteger teamOut = new AtomicInteger(-1);
 
 	public enum SwimStroke { 
 		Backstroke(1,2.5,Color.black),
@@ -145,16 +148,33 @@ public class Swimmer extends Thread {
 			enterStadium();	
 			
 			goToStartingBlocks();
-								
+
+			 
+			synchronized (teamOut){
+				while(swimStroke.order!=1 && teamOut.get()!=team && myLocation.getLocation().equals(start)){
+				try {
+					teamOut.wait();
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}		
+				}
+			}
+			synchronized (teamOut) {teamOut.set(-1);}
+			
 			dive(); 
 				
 			swimRace();
+			synchronized(teamOut) {
+				teamOut.set(team);// set flag to start
+				teamOut.notifyAll();
+			}
 			if(swimStroke.order==4) {
 				finish.finishRace(ID, team); // fnishline
 			}
 			else {
 				//System.out.println("Thread "+this.ID + " done " + currentBlock.getX()  + " " +currentBlock.getY() );			
 				exitPool();//if not last swimmer leave pool
+				
 			}
 			
 		} catch (InterruptedException e1) {  //do nothing

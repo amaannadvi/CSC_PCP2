@@ -9,6 +9,7 @@ public class SwimTeam extends Thread {
 	public static StadiumGrid stadium; //shared 
 	private Swimmer [] swimmers;
 	private int teamNo; //team number 
+	
 
 	
 	public static final int sizeOfTeam=4;
@@ -27,11 +28,13 @@ public class SwimTeam extends Thread {
 		}
 	}
 	
+
 	
 	public void run() {
 		try {	
 			for(int s=0;s<sizeOfTeam; s++) { //start swimmer threads
 				swimmers[s].start();
+				
 				
 			}
 			

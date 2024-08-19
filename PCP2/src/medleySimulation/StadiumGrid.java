@@ -82,13 +82,11 @@ public class StadiumGrid {
 	
 //Make a one block move in a direction
 	public GridBlock moveTowards(GridBlock currentBlock,int xDir, int yDir,PeopleLocation myLocation) throws InterruptedException {  //try to move in 
-		int c_x;
-		int c_y;
-		synchronized(this)
-		{
-		 	c_x= currentBlock.getX();
-			c_y= currentBlock.getY();
-		}
+
+	
+		int c_x= currentBlock.getX();
+		int c_y= currentBlock.getY();
+		
 		
 		int add_x= Integer.signum(xDir-c_x);//-1,0 or 1
 		int add_y= Integer.signum(yDir-c_y);//-1,0 or 1
