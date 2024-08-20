@@ -22,7 +22,8 @@ public class StadiumGrid {
 	private final static int minX =5;//minimum x dimension
 	private final static int minY =5;//minimum y dimension
 	private final static AtomicBoolean canEnter = new AtomicBoolean(true);
-	
+	private final static AtomicBoolean canMove = new AtomicBoolean(true);	
+
 	
 	StadiumGrid(int x, int y, int nTeams ,FinishCounter c) throws InterruptedException {
 		if (x<minX) x=minX; //minimum x
@@ -102,6 +103,9 @@ public class StadiumGrid {
 			canEnter.set(true);
 			canEnter.notify();
 		}
+
+		
+		
 	
 		int c_x= currentBlock.getX();
 		int c_y= currentBlock.getY();
@@ -125,11 +129,23 @@ public class StadiumGrid {
 			newBlock = whichBlock(add_x+c_x,c_y); //try moving x only first
 		else 
 			newBlock= whichBlock(add_x+c_x,add_y+c_y);//try diagonal or y
-		
-		
-			while((!newBlock.get(myLocation.getID()))) {} //wait until block is free - but spinning is bad
+
+			//while((!newBlock.get(myLocation.getID()))){} //wait until block is free - but spinning is bad
+			synchronized (canMove){
+				
+				while(!canMove.get() || (!newBlock.get(myLocation.getID()))){
+					try {
+						canMove.wait();
+					} catch (InterruptedException e) {
+					}
+				}
+			}
 			myLocation.setLocation(newBlock);		
 			currentBlock.release(); //must release current block
+			synchronized (canMove) {
+				canMove.set(true);
+				canMove.notifyAll();
+			}
 			return newBlock;
 		
 		
