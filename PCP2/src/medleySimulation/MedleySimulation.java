@@ -118,7 +118,7 @@ public class MedleySimulation {
 			while(!begin.get()) {
 				try {
 				begin.wait();
-				} catch (InterruptedException e) {} 
+				} catch (InterruptedException e) { e.printStackTrace();} 
 			}
 		}
 			

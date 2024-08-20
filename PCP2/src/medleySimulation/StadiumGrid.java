@@ -4,6 +4,12 @@
 package medleySimulation;
 
 //This class represents the club as a grid of GridBlocks
+
+import java.util.concurrent.atomic.AtomicBoolean;
+
+
+
+
 public class StadiumGrid {
 	private GridBlock [][] Blocks;
 	private final int x; //maximum x value
@@ -15,6 +21,7 @@ public class StadiumGrid {
 	private GridBlock startingBlocks[]; //hard coded starting blocks
 	private final static int minX =5;//minimum x dimension
 	private final static int minY =5;//minimum y dimension
+	private final static AtomicBoolean canEnter = new AtomicBoolean(true);
 	
 	
 	StadiumGrid(int x, int y, int nTeams ,FinishCounter c) throws InterruptedException {
@@ -68,7 +75,16 @@ public class StadiumGrid {
 	
 	//a person enters the stadium
 	public GridBlock enterStadium(PeopleLocation myLocation) throws InterruptedException  {
-				while((entrance.get(myLocation.getID()))) {} //wait at entrace until entrance is free - spinning, not good
+				//while((entrance.get(myLocation.getID()))) {} //wait at entrace until entrance is free - spinning, not good
+				synchronized (canEnter){
+					while(!canEnter.get()){
+						try{
+							canEnter.wait();
+						}catch (InterruptedException e){e.printStackTrace();}	
+						
+					}	
+				}
+
 				myLocation.setLocation(entrance);
 				myLocation.setInStadium(true);
 				return entrance;
@@ -82,7 +98,10 @@ public class StadiumGrid {
 	
 //Make a one block move in a direction
 	public GridBlock moveTowards(GridBlock currentBlock,int xDir, int yDir,PeopleLocation myLocation) throws InterruptedException {  //try to move in 
-
+		synchronized(canEnter){
+			canEnter.set(true);
+			canEnter.notify();
+		}
 	
 		int c_x= currentBlock.getX();
 		int c_y= currentBlock.getY();

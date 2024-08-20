@@ -145,6 +145,13 @@ public class Swimmer extends Thread {
 			//Swimmer arrives
 			sleep(movingSpeed+(rand.nextInt(10))); //arriving takes a while
 			myLocation.setArrived();
+
+			/* 	synchronized(canEnter){
+				while(!canEnter)
+				canEnter.wait();
+				canEnter.set(swimStroke==1)
+			}
+			*/
 			enterStadium();	
 			
 			goToStartingBlocks();
