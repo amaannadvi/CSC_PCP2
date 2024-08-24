@@ -84,10 +84,9 @@ public class StadiumGrid {
 						}catch (InterruptedException e){e.printStackTrace();}	
 						
 					}	
+					myLocation.setLocation(entrance);
+					myLocation.setInStadium(true);
 				}
-
-				myLocation.setLocation(entrance);
-				myLocation.setInStadium(true);
 				return entrance;
 			
 	}
@@ -99,17 +98,9 @@ public class StadiumGrid {
 	
 //Make a one block move in a direction
 	public GridBlock moveTowards(GridBlock currentBlock,int xDir, int yDir,PeopleLocation myLocation) throws InterruptedException {  //try to move in 
-		synchronized(canEnter){
-			canEnter.set(true);
-			canEnter.notify();
-		}
-
 		
-		
-	
 		int c_x= currentBlock.getX();
 		int c_y= currentBlock.getY();
-		
 		
 		int add_x= Integer.signum(xDir-c_x);//-1,0 or 1
 		int add_y= Integer.signum(yDir-c_y);//-1,0 or 1
@@ -125,28 +116,26 @@ public class StadiumGrid {
 		}
 
 		GridBlock newBlock;
-		if(add_x!=0)
-			newBlock = whichBlock(add_x+c_x,c_y); //try moving x only first
-		else 
-			newBlock= whichBlock(add_x+c_x,add_y+c_y);//try diagonal or y
+			if(add_x!=0) newBlock = whichBlock(add_x+c_x,c_y); //try moving x only first
+			else newBlock= whichBlock(add_x+c_x,add_y+c_y);//try diagonal or y
 
 			//while((!newBlock.get(myLocation.getID()))){} //wait until block is free - but spinning is bad
-			synchronized (canMove){
+		synchronized (this){
 				
-				while(!canMove.get() || (!newBlock.get(myLocation.getID()))){
-					try {
-						canMove.wait();
-					} catch (InterruptedException e) {
-					}
+			while((!newBlock.get(myLocation.getID()))){
+				try {
+					this.wait();
+				} catch (InterruptedException e) {
 				}
 			}
+				
 			myLocation.setLocation(newBlock);		
 			currentBlock.release(); //must release current block
-			synchronized (canMove) {
-				canMove.set(true);
-				canMove.notifyAll();
-			}
-			return newBlock;
+			this.notifyAll();
+				
+				
+		}
+		return newBlock;
 		
 		
 	} 
@@ -163,10 +152,22 @@ public GridBlock jumpTo(GridBlock currentBlock,int x, int y,PeopleLocation myLoc
 		GridBlock newBlock= whichBlock(x,y);//try diagonal or y
 		
 		
-			while((!newBlock.get(myLocation.getID()))) { } //wait until block is free - but spinning, not good
+		//while((!newBlock.get(myLocation.getID()))) { } //wait until block is free - but spinning, not good
+		synchronized (this) {
+			while((!newBlock.get(myLocation.getID()))){
+				try {
+					this.wait();
+				} catch (InterruptedException e) {
+				}
+			}
+				
 			myLocation.setLocation(newBlock);		
 			currentBlock.release(); //must release current block
-			return newBlock;
+			this.notifyAll();	
+				
+		}
+		
+		return newBlock;
 		
 		
 	} 
