@@ -40,9 +40,8 @@ public class PeopleLocation  { // this is made a separate class so don't have to
 	public GridBlock getLocation() {
 		return location;
 	}
-	public synchronized void setLocation(GridBlock location) {
+	public void setLocation(GridBlock location) {
 		this.location = location;
-		notifyAll();
 	}
 
 	//getter

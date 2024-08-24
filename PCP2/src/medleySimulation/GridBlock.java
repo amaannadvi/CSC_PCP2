@@ -40,7 +40,7 @@ public class GridBlock {
 	//release a block
 	public synchronized void release() {
 		isOccupied= -1;
-		notifyAll();
+		this.notifyAll();
 	}
 	
 

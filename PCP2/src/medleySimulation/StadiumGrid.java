@@ -76,11 +76,11 @@ public class StadiumGrid {
 	
 	//a person enters the stadium
 	public GridBlock enterStadium(PeopleLocation myLocation) throws InterruptedException  {
-				//while((entrance.get(myLocation.getID()))) {} //wait at entrace until entrance is free - spinning, not good
-				synchronized (canEnter){
-					while(!canEnter.get()){
+				//while((!entrance.get(myLocation.getID()))) {} //wait at entrace until entrance is free - spinning, not good
+				synchronized (this){
+					while(!entrance.get(myLocation.getID())){
 						try{
-							canEnter.wait();
+							wait();
 						}catch (InterruptedException e){e.printStackTrace();}	
 						
 					}	
@@ -130,10 +130,8 @@ public class StadiumGrid {
 			}
 				
 			myLocation.setLocation(newBlock);		
-			currentBlock.release(); //must release current block
-			this.notifyAll();
-				
-				
+			currentBlock.release(); //must release current block	
+			notifyAll();
 		}
 		return newBlock;
 		
@@ -163,8 +161,7 @@ public GridBlock jumpTo(GridBlock currentBlock,int x, int y,PeopleLocation myLoc
 				
 			myLocation.setLocation(newBlock);		
 			currentBlock.release(); //must release current block
-			this.notifyAll();	
-				
+			notifyAll();	
 		}
 		
 		return newBlock;
