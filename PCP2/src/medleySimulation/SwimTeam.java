@@ -2,7 +2,9 @@
 //Class to represent a swim team - which has four swimmers
 package medleySimulation;
 
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.CyclicBarrier;
+import java.util.concurrent.atomic.AtomicBoolean;
 import medleySimulation.Swimmer.SwimStroke;
 
 public class SwimTeam extends Thread {
@@ -10,13 +12,16 @@ public class SwimTeam extends Thread {
 	public static StadiumGrid stadium; //shared 
 	private Swimmer [] swimmers;
 	private int teamNo; //team number 
-	
+	private AtomicBoolean inPool = new AtomicBoolean(false);
+	public static CountDownLatch[] latches = {new CountDownLatch(1),new CountDownLatch(2),new CountDownLatch(3)};
+
 
 	
 	public static final int sizeOfTeam=4;
 	
 	SwimTeam( int ID, FinishCounter finish,PeopleLocation [] locArr ) {
 		CyclicBarrier barrier = new CyclicBarrier(MedleySimulation.numTeams);
+		CountDownLatch cLatch = new CountDownLatch(1);
 		this.teamNo=ID;
 		
 		swimmers= new Swimmer[sizeOfTeam];

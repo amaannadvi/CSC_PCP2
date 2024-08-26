@@ -6,8 +6,8 @@ package medleySimulation;
 import java.awt.Color;
 import java.util.Random;
 import java.util.concurrent.BrokenBarrierException;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.CyclicBarrier;
-import java.util.concurrent.atomic.AtomicInteger;
 
 
 
@@ -26,9 +26,9 @@ public class Swimmer extends Thread {
 	private int ID; //thread ID 
 	private int team; // team ID
 	private GridBlock start;
-	private static AtomicInteger teamOut = new AtomicInteger(-1);
-	private static AtomicInteger numSet = new AtomicInteger(0);
 	private static CyclicBarrier barrier;
+	private static CountDownLatch[] latches = new CountDownLatch[MedleySimulation.numTeams];
+	
 
 	public enum SwimStroke { 
 		Backstroke(1,2.5,Color.black),
@@ -63,6 +63,7 @@ public class Swimmer extends Thread {
 		finish=f;
 		rand=new Random();
 		this.barrier= barrier;
+
 	}
 	
 	//getter
@@ -145,7 +146,7 @@ public class Swimmer extends Thread {
 	
 	public void run() {
 		try {
-			
+			latches[team] = new CountDownLatch(1);
 			//Swimmer arrives
 			sleep(movingSpeed+(rand.nextInt(10))); //arriving takes a while
 			myLocation.setArrived();
@@ -166,29 +167,18 @@ public class Swimmer extends Thread {
 				  }
 			}
 
-			 
-			synchronized (teamOut){
-				while(swimStroke.order!=1 && teamOut.get()!=team && myLocation.getLocation().equals(start)){
-				try {
-					teamOut.wait();
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}		
-				}
-			}
-			synchronized (teamOut) {teamOut.set(-1);}
 			
+			if (swimStroke.order!=1)latches[team].await();
 			dive(); 
-				
 			swimRace();
-			synchronized(teamOut) {
-				teamOut.set(team);// set flag to start
-				teamOut.notifyAll();
-			}
+			
+
 			if(swimStroke.order==4) {
 				finish.finishRace(ID, team); // fnishline
 			}
 			else {
+				latches[team].countDown();
+				latches[team]=new CountDownLatch(1);
 				//System.out.println("Thread "+this.ID + " done " + currentBlock.getX()  + " " +currentBlock.getY() );			
 				exitPool();//if not last swimmer leave pool
 				
