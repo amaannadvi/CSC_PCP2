@@ -34,6 +34,15 @@ public class SwimTeam extends Thread {
 		try {	
 			for(int s=0;s<sizeOfTeam; s++) { //start swimmer threads
 				swimmers[s].start();
+
+				synchronized (swimmers[s]) 
+				{
+					try{
+					swimmers[s].wait();
+					}catch(InterruptedException e){
+					e.printStackTrace();
+					}	
+				}
 				
 				
 			}

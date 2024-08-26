@@ -39,8 +39,8 @@ public class GridBlock {
 	
 	//release a block
 	public synchronized void release() {
+		notifyAll();
 		isOccupied= -1;
-		this.notifyAll();
 	}
 	
 

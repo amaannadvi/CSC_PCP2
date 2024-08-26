@@ -152,7 +152,9 @@ public class Swimmer extends Thread {
 				canEnter.set(swimStroke==1)
 			}
 			*/
-			enterStadium();	
+			enterStadium();
+			synchronized (this) {notify();}	
+			
 			
 			goToStartingBlocks();
 
