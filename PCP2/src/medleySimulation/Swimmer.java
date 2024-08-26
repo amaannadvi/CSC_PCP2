@@ -5,8 +5,10 @@ package medleySimulation;
 
 import java.awt.Color;
 import java.util.Random;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.BrokenBarrierException;
+import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.atomic.AtomicInteger;
+
 
 
 
@@ -24,8 +26,9 @@ public class Swimmer extends Thread {
 	private int ID; //thread ID 
 	private int team; // team ID
 	private GridBlock start;
-	private static final AtomicBoolean exiting = new AtomicBoolean();
 	private static AtomicInteger teamOut = new AtomicInteger(-1);
+	private static AtomicInteger numSet = new AtomicInteger(0);
+	private static CyclicBarrier barrier;
 
 	public enum SwimStroke { 
 		Backstroke(1,2.5,Color.black),
@@ -50,7 +53,7 @@ public class Swimmer extends Thread {
 	    private final SwimStroke swimStroke;
 	
 	//Constructor
-	Swimmer( int ID, int t, PeopleLocation loc, FinishCounter f, int speed, SwimStroke s) {
+	Swimmer( int ID, int t, PeopleLocation loc, FinishCounter f, int speed, SwimStroke s, CyclicBarrier barrier) {
 		this.swimStroke = s;
 		this.ID=ID;
 		movingSpeed=speed; //range of speeds for swimmers
@@ -59,6 +62,7 @@ public class Swimmer extends Thread {
 		start = stadium.returnStartingBlock(team);
 		finish=f;
 		rand=new Random();
+		this.barrier= barrier;
 	}
 	
 	//getter
@@ -146,17 +150,21 @@ public class Swimmer extends Thread {
 			sleep(movingSpeed+(rand.nextInt(10))); //arriving takes a while
 			myLocation.setArrived();
 
-			/* 	synchronized(canEnter){
-				while(!canEnter)
-				canEnter.wait();
-				canEnter.set(swimStroke==1)
-			}
-			*/
 			enterStadium();
-			synchronized (this) {notify();}	
+			synchronized (this) {notify();}	 //notify's next swimmer to .start() and enter stadium
 			
 			
 			goToStartingBlocks();
+
+			if (swimStroke.order==1){
+				try{
+					barrier.await(); // Threads reach here after completing its task
+				  } catch (InterruptedException e) {
+					e.printStackTrace();
+				  } catch (BrokenBarrierException e) {
+					e.printStackTrace();
+				  }
+			}
 
 			 
 			synchronized (teamOut){

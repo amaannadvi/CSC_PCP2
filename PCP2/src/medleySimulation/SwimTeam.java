@@ -2,6 +2,7 @@
 //Class to represent a swim team - which has four swimmers
 package medleySimulation;
 
+import java.util.concurrent.CyclicBarrier;
 import medleySimulation.Swimmer.SwimStroke;
 
 public class SwimTeam extends Thread {
@@ -15,6 +16,7 @@ public class SwimTeam extends Thread {
 	public static final int sizeOfTeam=4;
 	
 	SwimTeam( int ID, FinishCounter finish,PeopleLocation [] locArr ) {
+		CyclicBarrier barrier = new CyclicBarrier(MedleySimulation.numTeams);
 		this.teamNo=ID;
 		
 		swimmers= new Swimmer[sizeOfTeam];
@@ -24,7 +26,7 @@ public class SwimTeam extends Thread {
 		for(int i=teamNo*sizeOfTeam,s=0;i<((teamNo+1)*sizeOfTeam); i++,s++) { //initialise swimmers in team
 			locArr[i]= new PeopleLocation(i,strokes[s].getColour());
 	      	int speed=(int)(Math.random() * (3)+30); //range of speeds 
-			swimmers[s] = new Swimmer(i,teamNo,locArr[i],finish,speed,strokes[s]); //hardcoded speed for now
+			swimmers[s] = new Swimmer(i,teamNo,locArr[i],finish,speed,strokes[s],barrier); //hardcoded speed for now
 		}
 	}
 	
