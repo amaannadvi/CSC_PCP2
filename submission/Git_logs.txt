@@ -1,0 +1,90 @@
+commit 311ad4720cca20acd6ea745c51675ca5c90959e5 (HEAD -> main)
+Author: Syed Amaan Nadvi <Amaannadvi@gmail.com>
+Date:   Mon Sep 9 12:18:36 2024 +0200
+
+    implemented first second and third place as extra.
+
+commit 3142919a2051bb44ac7088a72d3a3bae18fce282
+Author: Syed Amaan Nadvi <Amaannadvi@gmail.com>
+Date:   Mon Aug 26 19:56:17 2024 +0200
+
+    to correct missed signals, changed tag in system to dedicated latches for every team
+
+commit 71f69185c1acf31a29c2b68c52c4339c15a30cb6
+Author: Syed Amaan Nadvi <Amaannadvi@gmail.com>
+Date:   Mon Aug 26 16:28:01 2024 +0200
+
+    Barrier implemented and missed signal noted on tag in function
+
+commit 791f7fd4ae4fec15157f9c2c521b9dfc5f5adaae
+Author: Syed Amaan Nadvi <Amaannadvi@gmail.com>
+Date:   Mon Aug 26 09:02:34 2024 +0200
+
+    Created wait() on swimmer object in swimteam to ensure swimmers enter in correct order.
+
+commit 295dcde2ed616591c6a378c9e18472ae852422f9
+Author: Syed Amaan Nadvi <Amaannadvi@gmail.com>
+Date:   Sat Aug 24 19:25:30 2024 +0200
+
+    corrected enterStadium synchronization
+
+commit 33258af55a10e2f5e044bd2e2eafea9b710dc60c
+Author: Syed Amaan Nadvi <Amaannadvi@gmail.com>
+Date:   Sat Aug 24 14:58:11 2024 +0200
+
+    Corrected the last spin and rethought some notify() statements
+
+commit 217addd9a5220b538332e0265280252d8fb5d9e7 (origin/main, origin/HEAD)
+Author: Syed Amaan Nadvi <Amaannadvi@gmail.com>
+Date:   Tue Aug 20 16:13:43 2024 +0200
+
+    Corrected spinning on move towards function of StadiumGrid with Atomic signaling
+
+commit d5aa52d7f4622ef54a515747eb6c54314d6da082
+Author: Syed Amaan Nadvi <Amaannadvi@gmail.com>
+Date:   Tue Aug 20 15:32:53 2024 +0200
+Date:   Sat Aug 24 14:58:11 2024 +0200
+
+    Corrected the last spin and rethought some notify() statements
+
+commit 217addd9a5220b538332e0265280252d8fb5d9e7 (origin/main, origin/HEAD)
+Author: Syed Amaan Nadvi <Amaannadvi@gmail.com>
+Date:   Tue Aug 20 16:13:43 2024 +0200
+
+    Corrected spinning on move towards function of StadiumGrid with Atomic signaling
+
+commit d5aa52d7f4622ef54a515747eb6c54314d6da082
+Author: Syed Amaan Nadvi <Amaannadvi@gmail.com>
+Date:   Tue Aug 20 15:32:53 2024 +0200
+
+    corrected spin while loop in stadiumGrid using signaling
+
+commit c150d7e6f1c28419deb3f77085752a9082eff4d6
+Author: Syed Amaan Nadvi <Amaannadvi@gmail.com>
+Date:   Mon Aug 19 15:36:27 2024 +0200
+
+    syncronized grid block get method. added latch to ensure swimmers wait for teammates
+
+commit 35d330c5d1d4620e7ddd149e34a403eb2a5a4fcd
+Author: Syed Amaan Nadvi <Amaannadvi@gmail.com>
+Date:   Sun Aug 18 15:21:05 2024 +0200
+
+    reverted some incorrect fixes in SwimTeam, implemented start button with latch
+
+commit e13f243a7724b4b85d70cc7b94fb6ff43631f3d0
+Author: Syed Amaan Nadvi <amaannadvi@gmail.com>
+Date:   Sun Aug 18 14:31:03 2024 +0200
+
+    Corrected some concurrency issues in SwimTeam and GridBlock, attempted to fix start button
+
+commit 38b5ae15dc2ccda960f4c04b98eca504eba4b15c
+Author: Amaan Nadvi <amaannadvi@gmail.com>
+Date:   Thu Aug 15 18:45:50 2024 +0200
+
+    importing skeleton files
+
+commit f51872ce424e4be939a6972b657ceef7690e220d
+Author: amaannadvi <118596586+amaannadvi@users.noreply.github.com>
+Date:   Thu Aug 15 18:41:44 2024 +0200
+
+    Initial commit

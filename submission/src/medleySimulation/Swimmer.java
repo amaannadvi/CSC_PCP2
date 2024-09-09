@@ -26,7 +26,6 @@ public class Swimmer extends Thread {
 	private int ID; //thread ID 
 	private int team; // team ID
 	private GridBlock start;
-	//new variables barrier and latch
 	private static CyclicBarrier barrier;
 	private static CountDownLatch[] latches = new CountDownLatch[MedleySimulation.numTeams];
 	
@@ -63,7 +62,6 @@ public class Swimmer extends Thread {
 		start = stadium.returnStartingBlock(team);
 		finish=f;
 		rand=new Random();
-		//barrier passed in from SwimTeam
 		this.barrier= barrier;
 
 	}
@@ -150,7 +148,7 @@ public class Swimmer extends Thread {
 		try {
 			
 			latches[team] = new CountDownLatch(1);
-			//Swimmer arrives 
+			//Swimmer arrives
 			sleep(movingSpeed+(rand.nextInt(10))); //arriving takes a while
 			myLocation.setArrived();
 			enterStadium();
@@ -177,10 +175,8 @@ public class Swimmer extends Thread {
 		
 			dive(); 
 			swimRace();
-			//increment latch to release waiting swimmers at the block
 			latches[team].countDown();
 			
-			//ensuring that latches do not break
 			synchronized (this) {
 				if(swimStroke.order==4) {
 					finish.finishRace(ID, team); // fnishline

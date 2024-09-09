@@ -77,8 +77,6 @@ public class StadiumGrid {
 	//a person enters the stadium
 	public GridBlock enterStadium(PeopleLocation myLocation) throws InterruptedException  {
 				//while((!entrance.get(myLocation.getID()))) {} //wait at entrace until entrance is free - spinning, not good
-
-				//using synchronised block for wait()
 				synchronized (this){
 					while(!entrance.get(myLocation.getID())){
 						try{
@@ -154,7 +152,6 @@ public GridBlock jumpTo(GridBlock currentBlock,int x, int y,PeopleLocation myLoc
 		
 		//while((!newBlock.get(myLocation.getID()))) { } //wait until block is free - but spinning, not good
 		synchronized (this) {
-			//removing spining with wait()
 			while((!newBlock.get(myLocation.getID()))){
 				try {
 					this.wait();
