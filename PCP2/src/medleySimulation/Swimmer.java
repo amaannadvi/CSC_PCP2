@@ -146,13 +146,14 @@ public class Swimmer extends Thread {
 	
 	public void run() {
 		try {
+			
 			latches[team] = new CountDownLatch(1);
 			//Swimmer arrives
 			sleep(movingSpeed+(rand.nextInt(10))); //arriving takes a while
 			myLocation.setArrived();
-
 			enterStadium();
 			synchronized (this) {notify();}	 //notify's next swimmer to .start() and enter stadium
+
 			
 			
 			goToStartingBlocks();
@@ -167,23 +168,26 @@ public class Swimmer extends Thread {
 				  }
 			}
 
-			
-			if (swimStroke.order!=1)latches[team].await();
+			synchronized (this) {
+			if (swimStroke.order!=1)
+				latches[team].await();
+			}
+		
 			dive(); 
 			swimRace();
+			latches[team].countDown();
 			
-
-			if(swimStroke.order==4) {
-				finish.finishRace(ID, team); // fnishline
-			}
-			else {
-				latches[team].countDown();
-				latches[team]=new CountDownLatch(1);
-				//System.out.println("Thread "+this.ID + " done " + currentBlock.getX()  + " " +currentBlock.getY() );			
-				exitPool();//if not last swimmer leave pool
-				
-			}
-			
+			synchronized (this) {
+				if(swimStroke.order==4) {
+					finish.finishRace(ID, team); // fnishline
+				}
+				else {
+					
+					latches[team]=new CountDownLatch(1);
+					//System.out.println("Thread "+this.ID + " done " + currentBlock.getX()  + " " +currentBlock.getY() );			
+					exitPool();//if not last swimmer leave pool
+				}
+			}	
 		} catch (InterruptedException e1) {  //do nothing
 		} 
 	}

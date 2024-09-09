@@ -47,9 +47,17 @@ public class MedleySimulation {
 	    txt.setLayout(new BoxLayout(txt, BoxLayout.LINE_AXIS));
 	    JLabel winner =new JLabel("");
 	    txt.add(winner);
-	    g.add(txt);
 	    
-	    counterDisplay = new CounterDisplay(winner,finishLine);      //thread to update score
+		//Adding labels for second and third swimmer
+		JLabel second =new JLabel("");
+	    txt.add(second);
+	    
+		JLabel third =new JLabel("");
+	    txt.add(third);
+	    g.add(txt);
+
+	    
+	    counterDisplay = new CounterDisplay(winner,second,third,finishLine);      //thread to update score
 	    
 	    //Add start and exit buttons
 	    JPanel b = new JPanel();
